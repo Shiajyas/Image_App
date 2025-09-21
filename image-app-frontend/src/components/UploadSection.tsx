@@ -58,7 +58,6 @@ export default function UploadSection() {
     }
 
     const formData = new FormData();
-
     files.forEach((file, idx) => {
       formData.append("images", file);
       formData.append("titles[]", titles[idx]);
@@ -68,16 +67,20 @@ export default function UploadSection() {
       formData.append("ownerId", currentUserId);
     }
 
-    try {
-      await ImageService.upload(formData);
-      toast.success("Uploaded successfully!");
-      setFiles([]);
-      setTitles([]);
-      setErrors([]);
-    } catch (err) {
-      toast.error("Upload failed");
-      console.error(err);
-    }
+    // use toast.promise for built-in loading/success/error handling
+    await toast.promise(
+      ImageService.upload(formData),
+      {
+        loading: "Uploading...",
+        success: "Uploaded successfully!",
+        error: "Upload failed",
+      }
+    );
+
+    // reset only if successful
+    setFiles([]);
+    setTitles([]);
+    setErrors([]);
   };
 
   return (

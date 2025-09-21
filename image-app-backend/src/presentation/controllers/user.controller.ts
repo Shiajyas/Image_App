@@ -31,6 +31,8 @@ export class UserController {
       const usecase = container.resolve(LoginUserUseCase);
       const result = await usecase.execute(req.body);
 
+      console.log(result, "result");
+
       res.status(HTTP_STATUS.OK).json({
         success: true,
         message: MESSAGES.USER.LOGIN_SUCCESS,
