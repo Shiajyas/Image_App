@@ -3,7 +3,7 @@ import axios from "axios";
 import { useUserStore } from "../store/userStore";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api", 
+  baseURL: import.meta.env.VITE_API_BASE_URL , 
 });
 
 // Request interceptor: attach token
