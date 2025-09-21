@@ -23,12 +23,11 @@ export default function Dashboard() {
       const res = await ImageService.getAll(userId!, pageNum, 8);
       const data = res.data.images;
 
-      setImages((prev: any) => {
-        const combined = append ? [...prev, ...data] : data;
-        const unique = Array.from(new Map(combined.map((img: any) => [img.id, img])).values());
-        return unique;
-      });
-
+   setImages((prev: any[]) => {
+  const combined = append ? [...prev, ...data] : data;
+  const unique = Array.from(new Map(combined.map((img: any) => [img.id, img])).values());
+  return unique as any[];
+});
       setHasMore(data.length === 8);
     } catch {
       toast.error("Failed to load images");
