@@ -10,8 +10,8 @@ import { errorMiddleware } from "./presentation/middlewares/error.middleware";
 const app = express();
 
 const allowedOrigins = [
-  "http://localhost:5173",                    // your local frontend dev URL
-  "https://image-app-beige.vercel.app"       // your deployed Vercel frontend URL
+  "http://localhost:5173",    
+      "https://image-app-ruby.vercel.app"
 ];
 
 app.use(cors({
