@@ -10,16 +10,17 @@ export class EditImageUseCase {
   ) {}
 
   async execute(dto: EditImageDTO) {
+    console.log("EditImageUseCase execute", dto.url); 
     if (!dto.title) {
       throw new Error("Title is required");
     }
 
-    const partialEntity = ImageMapper.fromEditDTO(dto, dto?.file);
+    const partialEntity = ImageMapper.fromEditDTO(dto, dto?.url);
 
     const updated = await this.imageRepo.update(
       partialEntity.id!,
       partialEntity.title!,
-      dto.file // repo expects file object for upload
+      dto.url // repo expects file object for upload
     );
 
     if (!updated) throw new Error("Image not found or update failed");

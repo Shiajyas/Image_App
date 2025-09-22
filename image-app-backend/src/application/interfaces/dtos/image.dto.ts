@@ -6,6 +6,7 @@ export interface UploadImageDTO {
 }
 
 export interface EditImageDTO {
+  url: string | undefined;
   id: string;
   title?: string;
   file?: string

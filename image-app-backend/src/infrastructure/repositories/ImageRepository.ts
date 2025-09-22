@@ -36,7 +36,7 @@
           .limit(limit)
           .lean();
 
-          console.log(images,"images");
+          // console.log(images,"images");
         return images.map(
           (img) =>
             new Image(
@@ -64,6 +64,7 @@
 
     // Update image details
   async update(id: string, title: string, file?: string): Promise<Image | null> {
+    console.log(file,"file");
     try {
       // Prepare the update object
       const updateData: any = { title };
@@ -110,7 +111,7 @@
     images: { id: string; order: number }[]
   ): Promise<void> {
     try {
-      console.log(images,"images");
+      // console.log(images,"images");
       const bulkOps = images.map((img) => ({
         updateOne: {
           filter: { _id: img.id, ownerId: userId },
