@@ -14,6 +14,7 @@ const allowedOrigins = [
   "https://image-app-ruby.vercel.app"
 ];
 
+// Global CORS middleware handles preflight requests automatically
 app.use(
   cors({    
     origin: allowedOrigins,
@@ -21,9 +22,6 @@ app.use(
     credentials: true
   })
 );
-
-// Handle preflight requests
-app.options("*", cors({ origin: allowedOrigins, credentials: true }));
 
 // Middleware
 app.use(json());
