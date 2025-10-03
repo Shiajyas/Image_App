@@ -13,4 +13,6 @@ router.post("/login", (req, res) => userController.login(req, res));
 
 router.put("/change-password",authMiddleware,(req,res)=> userController.updatePassword(req, res))
 
+router.get("/refresh-token",authMiddleware,(req,res)=> userController.refreshToken(req, res))
+
 export default router;

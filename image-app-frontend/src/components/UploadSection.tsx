@@ -8,6 +8,7 @@ export default function UploadSection() {
   const [files, setFiles] = useState<File[]>([]);
   const [titles, setTitles] = useState<string[]>([]);
   const [errors, setErrors] = useState<boolean[]>([]);
+  const [loading, setLoading] = useState(false); // new loading state
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const user = useUserStore();
 
@@ -57,6 +58,8 @@ export default function UploadSection() {
       return;
     }
 
+    setLoading(true); // start loading
+
     const formData = new FormData();
     files.forEach((file, idx) => {
       formData.append("images", file);
@@ -67,20 +70,23 @@ export default function UploadSection() {
       formData.append("ownerId", currentUserId);
     }
 
-    // use toast.promise for built-in loading/success/error handling
-    await toast.promise(
-      ImageService.upload(formData),
-      {
-        loading: "Uploading...",
-        success: "Uploaded successfully!",
-        error: "Upload failed",
-      }
-    );
+    try {
+      await toast.promise(
+        ImageService.upload(formData),
+        {
+          loading: "Uploading...",
+          success: "Uploaded successfully!",
+          error: "Upload failed",
+        }
+      );
 
-    // reset only if successful
-    setFiles([]);
-    setTitles([]);
-    setErrors([]);
+      // reset only if successful
+      setFiles([]);
+      setTitles([]);
+      setErrors([]);
+    } finally {
+      setLoading(false); // stop loading
+    }
   };
 
   return (
@@ -91,6 +97,7 @@ export default function UploadSection() {
           <button
             onClick={() => fileInputRef.current?.click()}
             className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm"
+            disabled={loading} // disable while uploading
           >
             <Plus size={16} /> Add Images
           </button>
@@ -115,6 +122,7 @@ export default function UploadSection() {
                 <button
                   onClick={() => removeFile(idx)}
                   className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+                  disabled={loading} // disable remove while uploading
                 >
                   <X size={14} />
                 </button>
@@ -133,6 +141,7 @@ export default function UploadSection() {
                   className={`w-full p-1 border rounded text-sm dark:bg-gray-600 dark:text-white ${
                     errors[idx] ? "border-red-500" : "border-gray-300"
                   }`}
+                  disabled={loading} // disable editing while uploading
                 />
                 {errors[idx] && (
                   <p className="text-red-500 text-xs mt-1">Title is required</p>
@@ -145,9 +154,12 @@ export default function UploadSection() {
         {files.length > 0 && titles.every((t) => t.trim() !== "") && (
           <button
             onClick={handleUpload}
-            className="w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded"
+            className={`w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading} // disable upload while uploading
           >
-            Upload {files.length} Image{files.length > 1 ? "s" : ""}
+            {loading ? "Uploading..." : `Upload ${files.length} Image${files.length > 1 ? "s" : ""}`}
           </button>
         )}
       </div>

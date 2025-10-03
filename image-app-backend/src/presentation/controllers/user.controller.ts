@@ -67,4 +67,32 @@ export class UserController {
       });
     }
   }
+
+  async refreshToken(req: Request, res: Response) {
+    try {
+      const user = (req as any).user; // Extract user info from request (set by auth middleware)
+      if (!user) {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          success: false,
+          message: MESSAGES.USER.UNAUTHORIZED,
+        });
+      }
+
+      const usecase = container.resolve(LoginUserUseCase);
+      const result = await usecase.execute({ email: user.email, password: user.password });
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: MESSAGES.USER.TOKEN_REFRESH_SUCCESS,
+        data: result,
+      });
+    } catch (err) {
+      console.error("UserController.refreshToken error:", err);
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: MESSAGES.ERROR.SERVER,
+        error: err,
+      });
+    }
+  }
 }

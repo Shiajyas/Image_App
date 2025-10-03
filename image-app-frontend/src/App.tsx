@@ -13,7 +13,7 @@ import UploadSection from "./components/UploadSection";
 function App() {
   return (
     <Router>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
 
       <Navbar />
       <Routes>

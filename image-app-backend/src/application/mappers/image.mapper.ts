@@ -14,6 +14,7 @@ export class ImageMapper {
       title: image.title,
       url: image.url,
       order: image.order,
+      createdAt: image.createdAt
     };
   }
 

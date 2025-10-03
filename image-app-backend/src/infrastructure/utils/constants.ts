@@ -14,6 +14,8 @@ export const MESSAGES = {
     LOGIN_SUCCESS: "Login successful",
     LOGIN_FAILED: "Invalid email or password",
     PASSWORD_RESET_SUCCESS: "Password reset successfully",
+    TOKEN_REFRESH_SUCCESS: "Token refreshed successfully",
+    UNAUTHORIZED: "Unauthorized access",
   },
   IMAGE: {
     UPLOAD_SUCCESS: "Images uploaded successfully",

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 interface EditModalProps {
   editing: { id: string; title: string; url?: string };
   onClose: () => void;
-  onSave: (data: { id: string; title: string; file?: File }) => void;
+  onSave: (data: { id: string; title: string; file?: File }) => Promise<void>;
   setEditing: React.Dispatch<
     React.SetStateAction<{ id: string; title: string; url?: string } | null>
   >;
@@ -12,8 +12,7 @@ interface EditModalProps {
 export default function EditModal({ editing, onClose, onSave, setEditing }: EditModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(editing.url || null);
-
-  console.error(editing, "editing");
+  const [loading, setLoading] = useState(false); // new loading state
 
   useEffect(() => {
     setPreview(editing.url || null);
@@ -27,12 +26,21 @@ export default function EditModal({ editing, onClose, onSave, setEditing }: Edit
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editing.title.trim()) {
       alert("Title cannot be empty");
       return;
     }
-    onSave({ id: editing.id, title: editing.title, file: file || undefined });
+
+    setLoading(true); // start loading
+    try {
+      await onSave({ id: editing.id, title: editing.title, file: file || undefined });
+      onClose(); // close modal after successful save
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setLoading(false); // stop loading
+    }
   };
 
   return (
@@ -53,6 +61,7 @@ export default function EditModal({ editing, onClose, onSave, setEditing }: Edit
           accept="image/*"
           onChange={handleFileChange}
           className="mb-4 block w-full text-sm text-gray-600 dark:text-gray-300"
+          disabled={loading} // disable file input while saving
         />
 
         <input
@@ -63,20 +72,25 @@ export default function EditModal({ editing, onClose, onSave, setEditing }: Edit
           }
           className="w-full p-2 border rounded mb-4 dark:bg-gray-700 dark:text-white"
           placeholder="Enter title"
+          disabled={loading} // disable text input while saving
         />
 
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
             className="px-3 py-1 bg-gray-500 text-white rounded"
+            disabled={loading} // disable cancel while saving
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="px-3 py-1 bg-green-600 text-white rounded"
+            className={`px-3 py-1 bg-green-600 text-white rounded ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading} // disable save while saving
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </div>

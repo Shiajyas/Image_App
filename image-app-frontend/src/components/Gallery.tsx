@@ -16,19 +16,19 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { MoreHorizontal } from "lucide-react";
 
 interface ImageItem {
   id: string;
   url: string;
   title: string;
+  createdAt?: string;
 }
 
 interface GalleryProps {
   images: ImageItem[];
   onDelete: (id: string) => void;
-  onEdit: (img: {
-    url: string | undefined; id: string; title: string 
-}) => void;
+  onEdit: (img: { id: string; title: string; url?: string }) => void;
   onReorder: (newOrder: { id: string; order: number }[]) => void;
 }
 
@@ -36,12 +36,15 @@ const SortableItem = React.memo(function SortableItem({
   id,
   url,
   title,
+  createdAt,
   onDelete,
   onEdit,
   onClick,
 }: ImageItem & { onDelete: any; onEdit: any; onClick: any }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -53,16 +56,16 @@ const SortableItem = React.memo(function SortableItem({
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="bg-white dark:bg-gray-800 p-2 rounded shadow"
+      className="bg-white dark:bg-gray-800 p-2 rounded shadow relative"
     >
-      {/* Image (fullscreen trigger) */}
+      {/* Image preview */}
       <img
         src={url}
         alt={title}
         className="rounded w-full h-32 object-cover mb-2 cursor-pointer"
         onClick={(e) => {
           e.stopPropagation();
-          onClick({ id, url, title }); // ✅ opens fullscreen
+          onClick({ id, url, title });
         }}
       />
 
@@ -74,29 +77,54 @@ const SortableItem = React.memo(function SortableItem({
         ⇅ drag
       </div>
 
+      {/* Title */}
       <p className="font-semibold text-sm truncate">{title}</p>
 
-      <div className="flex justify-between mt-2 text-sm">
+      {/* Date & Time */}
+      {createdAt && (
+        <p className="text-xs text-gray-500 mt-1">
+        UploadedAt :  {new Date(createdAt).toLocaleString()}
+        </p>
+      )}
+
+      {/* 3-dot menu */}
+      <div className="absolute top-2 right-2">
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onEdit({ id, title });
+            setMenuOpen(!menuOpen);
           }}
-          className="bg-yellow-500 px-2 py-1 rounded text-white"
+          className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
         >
-          Edit
+          <MoreHorizontal size={16} />
         </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            if (window.confirm("Are you sure you want to delete this image?")) {
-              onDelete(id);
-            }
-          }}
-          className="bg-red-500 px-2 py-1 rounded text-white"
-        >
-          Delete
-        </button>
+
+        {menuOpen && (
+          <div className="absolute right-0 mt-1 w-24 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded shadow-lg z-10">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen(false);
+                onEdit({ id, title, url });
+              }}
+              className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              Edit
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen(false);
+                if (window.confirm("Are you sure you want to delete this image?")) {
+                  onDelete(id);
+                }
+              }}
+              className="block w-full text-left px-3 py-1 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -113,7 +141,7 @@ export default function Gallery({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<ImageItem | null>(null);
 
-  // Keep local state in sync with parent
+  // Sync local state with parent
   useEffect(() => {
     setLocalImages(images);
   }, [images]);
@@ -157,6 +185,7 @@ export default function Gallery({
                 id={img.id}
                 url={img.url}
                 title={img.title}
+                createdAt={img.createdAt}
                 onDelete={onDelete}
                 onEdit={onEdit}
                 onClick={setPreviewImage}
@@ -179,9 +208,7 @@ export default function Gallery({
                       alt={item.title}
                       className="rounded w-full h-32 object-cover mb-2"
                     />
-                    <p className="font-semibold text-sm truncate">
-                      {item.title}
-                    </p>
+                    <p className="font-semibold text-sm truncate">{item.title}</p>
                   </>
                 );
               })()}
@@ -191,39 +218,34 @@ export default function Gallery({
       </DndContext>
 
       {/* 🔹 Fullscreen Modal */}
-{previewImage && (
-  <div
-    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
-    onClick={() => setPreviewImage(null)} // close when clicking backdrop
-  >
-    <div
-      className="relative w-full h-full flex flex-col items-center justify-center"
-      onClick={(e) => e.stopPropagation()} // prevent modal close on click
-    >
-      {/* Close Button */}
-      <button
-        className="absolute top-4 right-4 text-white text-3xl font-bold z-50"
-        onClick={() => setPreviewImage(null)}
-      >
-        ✕
-      </button>
+      {previewImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative w-full h-full flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-4 right-4 text-white text-3xl font-bold z-50"
+              onClick={() => setPreviewImage(null)}
+            >
+              ✕
+            </button>
 
-      {/* Fullscreen Image */}
-      <img
-        src={previewImage.url}
-        alt={previewImage.title}
-        className="max-h-[95vh] max-w-[95vw] object-contain rounded-lg"
-      />
+            <img
+              src={previewImage.url}
+              alt={previewImage.title}
+              className="max-h-[95vh] max-w-[95vw] object-contain rounded-lg"
+            />
 
-      {/* Caption */}
-      <p className="text-center text-white mt-4 text-lg">
-        {previewImage.title}
-      </p>
-    </div>
-  </div>
-)}
-
-
+            <p className="text-center text-white mt-4 text-lg">
+              {previewImage.title}
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

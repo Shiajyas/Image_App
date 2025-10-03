@@ -44,7 +44,8 @@
               img.title,
               img.url,
               img.order,
-              img.ownerId.toString()
+              img.ownerId.toString(),
+              img.createdAt
             )
         );
       } catch (error) {
