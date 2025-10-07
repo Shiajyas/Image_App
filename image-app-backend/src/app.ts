@@ -11,7 +11,8 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://image-app-ruby.vercel.app"
+  "https://image-app-ruby.vercel.app",
+  "https://image-app-ruby.vercel.app/api"
 ];
 
 // Global CORS middleware handles preflight requests automatically
