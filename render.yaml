@@ -11,7 +11,7 @@ services:
     # NOTE: On Render, if `rootDir` is set, `dockerfilePath` usually 
     # needs to point to the file *inside* that `rootDir`. 
     # Let's try the simplest path, assuming the Dockerfile is in the rootDir.
-    dockerfilePath: Dockerfile 
+    # dockerfilePath: Dockerfile 
     
     envVars:
       - key: NODE_ENV
