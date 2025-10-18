@@ -1,0 +1,12 @@
+# render.yaml
+services:
+  - type: web
+    name: image-app-backend
+    env: docker
+    dockerfilePath: ./Image_App/image-app-backend/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+    autoDeploy: true
