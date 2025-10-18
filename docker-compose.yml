@@ -1,14 +1,12 @@
-version: "3.9"
-
 services:
-  backend:
-    build:
-      context: ./image-app-backend
-    ports:
-      - "3001:3001"
-    env_file:
-      - ./image-app-backend/.env
-    volumes:
-      - ./image-app-backend:/app
-      - /app/node_modules
-    restart: unless-stopped
+  - type: web
+    name: image-app-backend
+    env: docker
+    rootDir: image-app-backend
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+    autoDeploy: true

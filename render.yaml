@@ -3,16 +3,11 @@ services:
     name: image-app-backend
     env: docker
     
-    # 1. ROOT DIRECTORY: Set the build context to the backend folder.
-    # This is crucial for Docker's COPY commands to find package.json.
     rootDir: image-app-backend 
     
-    # 2. DOCKERFILE PATH: Explicitly point to the Dockerfile.
-    # NOTE: On Render, if `rootDir` is set, `dockerfilePath` usually 
-    # needs to point to the file *inside* that `rootDir`. 
-    # Let's try the simplest path, assuming the Dockerfile is in the rootDir.
-    # dockerfilePath: Dockerfile 
-    
+    dockerfilePath: /docker-compose.yml
+    buildCommand: docker-compose build backend
+   
     envVars:
       - key: NODE_ENV
         value: production
