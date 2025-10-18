@@ -2,6 +2,9 @@ services:
   - type: web
     name: image-app-backend
     env: docker
+    # <--- ADD THIS LINE --->
+    rootDir: image-app-backend 
+    # <--- DOCKERFILE PATH is relative to the REPOSITORY ROOT --->
     dockerfilePath: ./image-app-backend/Dockerfile
     envVars:
       - key: NODE_ENV
