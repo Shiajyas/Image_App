@@ -19,12 +19,7 @@ export class RegisterUserUseCase {
       throw new Error("Email already registered");
     }
 
-    const existingUsername = await this.userRepo.findByUsername(dto.username);
-    if (existingUsername) {
-     
-      
-      throw new Error("Username already taken");
-    }
+
 
     // 2. Hash Password
     const hashedPassword = await this.authService.hashPassword(dto.password);
@@ -32,7 +27,7 @@ export class RegisterUserUseCase {
     // 3. Create User Entity
     const user = new User(
       dto.email,
-      dto.username,
+    
       dto.phone || "",
       hashedPassword,
       dto.avatar

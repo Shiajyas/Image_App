@@ -44,7 +44,7 @@ export default function Register() {
       const randomSeed =
         username + `-${Math.random().toString(36).substring(2, 5)}`;
       setAvatarUrl(generateAvatarUrl(randomSeed, randomTheme));
-      toast.success("Avatar updated!");
+      // toast.success("Avatar updated!");
     }
   };
 
