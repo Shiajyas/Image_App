@@ -95,7 +95,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       <div className="bg-white dark:bg-gray-800 p-8 rounded shadow w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">
           Register
