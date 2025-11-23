@@ -4,7 +4,6 @@ import { RegisterUserUseCase } from "../../application/use-cases/user/register-u
 import { LoginUserUseCase } from "../../application/use-cases/user/login-user.usecase";
 import { ResetPasswordUseCase } from "../../application/use-cases/user/reset-password.usecase";
 import { HTTP_STATUS, MESSAGES } from "../../infrastructure/utils/constants";
-// import { AppError } from "../../infrastructure/errors/AppError";
 
 export class UserController {
   
@@ -20,9 +19,9 @@ export class UserController {
       });
 
     } catch (err: any) {
-      console.error("Register error:", err);
+      console.error("Register Error:", err);
 
-      return res.status(err.status || 500).json({
+      return res.status(err.status || 400).json({
         success: false,
         message: err.message || MESSAGES.ERROR.SERVER,
       });
@@ -41,7 +40,7 @@ export class UserController {
       });
 
     } catch (err: any) {
-      console.error("Login error:", err);
+      console.error("Login Error:", err);
 
       return res.status(err.status || 401).json({
         success: false,
@@ -62,9 +61,11 @@ export class UserController {
       });
 
     } catch (err: any) {
-      return res.status(err.status || 500).json({
+      console.error("Password Update Error:", err);
+
+      return res.status(err.status || 400).json({
         success: false,
-        message: err.message,
+        message: err.message || MESSAGES.ERROR.SERVER,
       });
     }
   }

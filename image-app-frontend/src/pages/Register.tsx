@@ -44,7 +44,7 @@ export default function Register() {
       const randomSeed =
         username + `-${Math.random().toString(36).substring(2, 5)}`;
       setAvatarUrl(generateAvatarUrl(randomSeed, randomTheme));
-      // toast.success("Avatar updated!");
+     
     }
   };
 
@@ -89,13 +89,13 @@ export default function Register() {
       navigate("/login");
     } catch (err: any) {
       console.error(err);
-      toast.error(err?.response?.data?.message || "Registration failed");
+      toast.error(err?.response?.data?.message || "Email already registered");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <Toaster position="top-right" reverseOrder={false} />
+      {/* <Toaster position="top-right" reverseOrder={false} /> */}
       <div className="bg-white dark:bg-gray-800 p-8 rounded shadow w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">
           Register
