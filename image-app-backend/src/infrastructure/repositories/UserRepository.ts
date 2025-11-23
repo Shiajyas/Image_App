@@ -3,21 +3,56 @@ import { User } from "../../domain/entities/User";
 import UserModel from "../database/models/user.model";
 
 export class UserRepository implements IUserRepository {
-  async create(user: User): Promise<User> {
-    
+async create(user: User): Promise<User> {
+  try {
+    // Email Check
+    const existingEmail = await UserModel.findOne({ email: user.email });
+    if (existingEmail) {
+      console.error("UserRepository.create() error: Email already exists");
+      throw new Error("Email already exists");
+    }
+
+    // const existingUsername = await UserModel.findOne({ username: user.username });
+    // if (existingUsername) throw new Error("Username already exists");
+
+    const created = await UserModel.create({
+      email: user.email,
+      // username: user.username,
+      phone: user.phone,
+      password: user.password,
+      avatar: user.avatar
+    });
+
+    return new User(
+      created.email,
+      // created.username,
+      created.phone,
+      created.password,
+      created.avatar,
+      created._id.toString()
+    );
+
+  } catch (error) {
+    console.error("UserRepository.create() error:", error);
+    throw error; // return real error
+  }
+}
+
+  async findByUsername(username: string): Promise<User | null> {
     try {
-      const created = await UserModel.create(user);
-      console.log(created,"sussess");
+      const user = await UserModel.findOne({ username }).lean();
+      if (!user) return null;
+
       return new User(
-        created.email,
-        created.phone,
-        created.password,
-        created.avatar ?? undefined,
-        created._id.toString()
+        user.email,
+        user.phone,
+        user.password,
+        user.avatar ?? undefined,
+        user._id.toString()
       );
     } catch (error) {
-      console.error("UserRepository.create() error:", error);
-      throw new Error("Failed to create user.");
+      console.error("UserRepository.findByUsername() error:", error);
+      throw new Error("Failed to find user by username.");
     }
   }
 

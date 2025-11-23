@@ -10,7 +10,7 @@ const themeOptions = [
   "avataaars",
   "bottts",
   "identicon",
-  "initials",
+  "initials", 
 ];
 
 export default function Register() {

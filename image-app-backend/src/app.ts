@@ -3,9 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import { json, urlencoded } from "express";
 
-import userRoutes from "./presentation/routes/user.routes.js";
-import imageRoutes from "./presentation/routes/image.routes.js";
-import { errorMiddleware } from "./presentation/middlewares/error.middleware.js";
+import userRoutes from "./presentation/routes/user.routes";
+import imageRoutes from "./presentation/routes/image.routes"
+import { errorMiddleware } from "./presentation/middlewares/error.middleware";
 
 const app = express();
 
@@ -30,7 +30,10 @@ app.use(
 );
 
 // ✅ Handle preflight requests explicitly (important for uploads)
-app.options("*", cors());
+// CORS preflight for all routes
+// app.options("/(.*)", cors());
+
+
 
 // Middleware
 app.use(json());
@@ -39,6 +42,11 @@ app.use(urlencoded({ extended: true }));
 // Logger
 app.use(morgan("dev"));
 app.disable("etag");
+
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
+});
+
 
 // Routes
 app.use("/api/users", userRoutes);
